@@ -32,6 +32,7 @@ function getDefaultState() {
     reactions: {},
     suggestions: {},
     shoppingChecked: {},
+    customShoppingItems: {},
     pizzaDeployed: null,
     activityLog: [],
   };
@@ -225,6 +226,7 @@ export default function App() {
         {activeTab === 'now' && <NowTab appState={appState} persist={persist} canEdit={canEdit} currentUser={currentUser} addActivity={addActivity} />}
         {activeTab === 'meals' && <MealsTab appState={appState} persist={persist} canEdit={canEdit} currentUser={currentUser} addActivity={addActivity} />}
         {activeTab === 'shop' && <ShopTab appState={appState} persist={persist} currentUser={currentUser} />}
+
         {activeTab === 'family' && <FamilyTab appState={appState} currentUser={currentUser} lastFamilyView={lastFamilyView} setLastFamilyView={setLastFamilyView} />}
       </main>
 
@@ -638,8 +640,9 @@ function FlexNoteInput({ mealId, currentNote, onSave }) {
 // ══════════════════════════════════════════════════════════════
 // SHOP TAB
 // ══════════════════════════════════════════════════════════════
-function ShopTab({ appState, persist }) {
+function ShopTab({ appState, persist, currentUser }) {
   const checked = appState.shoppingChecked || {};
+  const customItems = appState.customShoppingItems || {};
 
   function toggleItem(itemId) {
     const newChecked = { ...checked, [itemId]: !checked[itemId] };
@@ -651,11 +654,28 @@ function ShopTab({ appState, persist }) {
     if (!section) return;
     const newChecked = { ...checked };
     section.items.forEach(item => { delete newChecked[item.id]; });
+    const sectionCustom = customItems[store] || [];
+    sectionCustom.forEach(item => { delete newChecked[item.id]; });
     persist({ ...appState, shoppingChecked: newChecked });
   }
 
   function resetAll() {
     persist({ ...appState, shoppingChecked: {} });
+  }
+
+  function addCustomItem(store, name) {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const item = { id: `custom-${Date.now()}`, name: trimmed, note: null, addedBy: currentUser };
+    const storeItems = [...(customItems[store] || []), item];
+    persist({ ...appState, customShoppingItems: { ...customItems, [store]: storeItems } });
+  }
+
+  function removeCustomItem(store, itemId) {
+    const storeItems = (customItems[store] || []).filter(i => i.id !== itemId);
+    const newChecked = { ...checked };
+    delete newChecked[itemId];
+    persist({ ...appState, customShoppingItems: { ...customItems, [store]: storeItems }, shoppingChecked: newChecked });
   }
 
   const swappedFlags = {};
@@ -671,9 +691,12 @@ function ShopTab({ appState, persist }) {
     setCollapsed(c => ({ ...c, [store]: !c[store] }));
   }
 
+  const [addingTo, setAddingTo] = useState(null);
+  const [newItemText, setNewItemText] = useState('');
+
   return (
     <div className="p-4 space-y-3">
-      <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4">
+      <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 no-print">
         <p className="font-bold text-gray-800 mb-2">Key Reminders</p>
         <div className="text-sm text-gray-700 space-y-1.5">
           <p>⏰ Bananas and kiwi — buy Tuesday. Use at Thursday and Friday breakfast — perishable. Do not let them sit in the cooler past Friday.</p>
@@ -686,20 +709,24 @@ function ShopTab({ appState, persist }) {
         </div>
       </div>
 
-      <button onClick={() => persist({ ...appState })} className="w-full bg-ocean text-white font-bold py-2 rounded-xl text-sm">Refresh flags from meal plan</button>
-      <button onClick={resetAll} className="w-full bg-gray-200 text-gray-600 font-bold py-2 rounded-xl text-sm">Reset All</button>
+      <div className="flex gap-2 no-print">
+        <button onClick={() => window.print()} className="flex-1 bg-ocean text-white font-bold py-2 rounded-xl text-sm">Print List</button>
+        <button onClick={resetAll} className="flex-1 bg-gray-200 text-gray-600 font-bold py-2 rounded-xl text-sm">Reset All</button>
+      </div>
 
       {SHOPPING_LIST.map(section => {
-        const checkedCount = section.items.filter(i => checked[i.id]).length;
+        const sectionCustom = customItems[section.store] || [];
+        const allItems = [...section.items, ...sectionCustom];
+        const checkedCount = allItems.filter(i => checked[i.id]).length;
         const isCollapsed = collapsed[section.store];
 
         return (
-          <div key={section.store} className="bg-cream rounded-2xl p-4">
+          <div key={section.store} className="bg-cream rounded-2xl p-4 print-section">
             <button onClick={() => toggleSection(section.store)} className="w-full flex items-center justify-between">
               <span className="font-bold text-gray-800">{section.store}</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-400">{checkedCount} of {section.items.length}</span>
-                <span className="text-gray-400">{isCollapsed ? '▼' : '▲'}</span>
+                <span className="text-xs text-gray-400">{checkedCount} of {allItems.length}</span>
+                <span className="text-gray-400 no-print">{isCollapsed ? '▼' : '▲'}</span>
               </div>
             </button>
             {section.storeNote && !isCollapsed && (
@@ -724,7 +751,39 @@ function ShopTab({ appState, persist }) {
                     </div>
                   );
                 })}
-                <button onClick={() => resetSection(section.store)} className="text-xs text-gray-400 underline mt-1">Reset section</button>
+                {sectionCustom.map(item => {
+                  const isChecked = !!checked[item.id];
+                  const addedByMember = FAMILY.find(f => f.id === item.addedBy);
+                  return (
+                    <div key={item.id} className={`flex items-start gap-3 py-2 ${isChecked ? 'opacity-40' : ''}`}>
+                      <input type="checkbox" checked={isChecked} onChange={() => toggleItem(item.id)} className="mt-1 w-5 h-5 rounded accent-ocean flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className={`text-sm ${isChecked ? 'line-through' : ''}`}>{item.name}</p>
+                        <p className="text-xs text-gray-400 no-print">Added by {addedByMember?.name || 'unknown'}</p>
+                      </div>
+                      <button onClick={() => removeCustomItem(section.store, item.id)} className="text-gray-300 text-sm no-print" title="Remove">✕</button>
+                    </div>
+                  );
+                })}
+                {addingTo === section.store ? (
+                  <div className="flex gap-2 mt-2 no-print">
+                    <input
+                      value={newItemText}
+                      onChange={e => setNewItemText(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { addCustomItem(section.store, newItemText); setNewItemText(''); setAddingTo(null); } }}
+                      placeholder="Item name..."
+                      className="flex-1 border rounded-lg px-3 py-2 text-sm"
+                      autoFocus
+                    />
+                    <button onClick={() => { addCustomItem(section.store, newItemText); setNewItemText(''); setAddingTo(null); }} className="bg-ocean text-white px-3 py-2 rounded-lg text-sm font-bold">Add</button>
+                    <button onClick={() => { setAddingTo(null); setNewItemText(''); }} className="text-gray-400 text-sm">✕</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between mt-1 no-print">
+                    <button onClick={() => resetSection(section.store)} className="text-xs text-gray-400 underline">Reset section</button>
+                    <button onClick={() => setAddingTo(section.store)} className="text-xs text-ocean font-semibold">+ Add item</button>
+                  </div>
+                )}
               </div>
             )}
           </div>
