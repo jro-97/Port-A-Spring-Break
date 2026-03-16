@@ -7,8 +7,8 @@ import { MEALS, SHOPPING_LIST, FLEX_MEAL_SHOPPING_MAP } from './mealData';
 // GitHub API credentials for shared state sync.
 // To generate a token: GitHub → Settings → Developer Settings
 // → Personal Access Tokens → Generate new token → select repo scope
-const GITHUB_OWNER = "YOUR_GITHUB_USERNAME_HERE";
-const GITHUB_REPO = "YOUR_REPO_NAME_HERE";
+const GITHUB_OWNER = "jro-97";
+const GITHUB_REPO = "Port-A-Spring-Break";
 const GITHUB_TOKEN = "YOUR_PERSONAL_ACCESS_TOKEN_HERE";
 // ============================================================
 
