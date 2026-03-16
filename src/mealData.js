@@ -23,9 +23,9 @@ const MEALS = [
     type: 'Snack',
     source: '🧊 Cooler',
     sourceKey: 'cooler',
-    name: 'Arrival Snack — Fruit Toast Bar',
-    description: 'Fruit toast bar — almond butter spread on toast or bread, topped with sliced banana, berries, and kiwi. Set it out on the counter while everyone unloads and settles. Also put out chips, drinks, and cut fruit. This is arrival energy — keep it casual and welcoming.',
-    nutritionNote: 'Use the bananas and kiwi NOW. They are the most perishable items in the cooler. Do not save them for later.',
+    name: 'Arrival Snack',
+    description: 'Chips, drinks, and cut fruit set out on the counter while everyone unloads and settles in. This is arrival energy — keep it casual and low effort. No cooking, no assembly required.',
+    nutritionNote: null,
     scaleNote: null,
     flex: false,
     flexDescription: null,
@@ -238,7 +238,7 @@ const SHOPPING_LIST = [
   {
     store: 'HEB — Pantry',
     items: [
-      { id: 'heb-pantry-1', name: 'Almond butter — one large jar (fruit toast bar, used 3x)', note: null },
+      { id: 'heb-pantry-1', name: 'Almond butter — one large jar (fruit toast bar, used 2x)', note: null },
       { id: 'heb-pantry-2', name: 'Beans — 2 cans', note: '⚠️ Double duty: breakfast tacos + taco dinner' },
       { id: 'heb-pantry-3', name: 'Pancake mix + syrup (backup breakfast option)', note: null },
       { id: 'heb-pantry-4', name: 'Pasta — 3 boxes (accounts for group scaling)', note: null },
@@ -275,10 +275,10 @@ const SHOPPING_LIST = [
   },
   {
     store: 'HEB — Produce: USE EARLY',
-    storeNote: '⚠️ Buy Tuesday. Use by Thursday morning. Do not let these sit in the cooler past Friday.',
+    storeNote: '⚠️ Buy Tuesday. Use at Thursday and Friday breakfast. Do not let these sit in the cooler past Friday.',
     items: [
-      { id: 'heb-early-1', name: 'Bananas', note: '⚠️ Use by Thursday morning' },
-      { id: 'heb-early-2', name: 'Kiwi', note: '⚠️ Use by Thursday morning' },
+      { id: 'heb-early-1', name: 'Bananas', note: '⚠️ Use at Thursday and Friday breakfast — perishable. Do not let them sit in the cooler past Friday.' },
+      { id: 'heb-early-2', name: 'Kiwi', note: '⚠️ Use at Thursday and Friday breakfast — perishable. Do not let them sit in the cooler past Friday.' },
     ],
   },
   {

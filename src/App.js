@@ -482,7 +482,7 @@ function MealsTab({ appState, persist, canEdit, currentUser, addActivity }) {
               </ul>
             </div>
             <div><strong>BEACH SNACK BAG — assemble every morning before beach:</strong> Yogurt cups, granola, grapes or berries, string cheese, hummus and baby carrots, granola bars, nuts. Chips go in alongside, not as the anchor.</div>
-            <div><strong>FRUIT TOAST BAR — appears three times:</strong> Wednesday arrival snack, Friday breakfast, Saturday breakfast. Almond butter on toast or bread topped with sliced banana, berries, kiwi, and any available fruit. Cold prep. No cooking.</div>
+            <div><strong>FRUIT TOAST BAR — appears at two breakfast windows only:</strong> Friday breakfast and Saturday breakfast. Almond butter on toast or bread topped with sliced banana, berries, kiwi, and available fruit. Cold prep. No cooking. Prioritize bananas and kiwi at Thursday and Friday breakfast — they are the most perishable items in the cooler.</div>
             <div><strong>BEANS — double duty.</strong> One purchase covers breakfast tacos Thursday and taco dinner Friday.</div>
             <div><strong>TORTILLAS — double duty.</strong> One large pack covers breakfast tacos Thursday and taco dinner Friday.</div>
           </div>
@@ -676,7 +676,7 @@ function ShopTab({ appState, persist }) {
       <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4">
         <p className="font-bold text-gray-800 mb-2">Key Reminders</p>
         <div className="text-sm text-gray-700 space-y-1.5">
-          <p>⏰ Bananas and kiwi — buy Tuesday, use by Thursday morning. They do not survive in a cooler past Friday.</p>
+          <p>⏰ Bananas and kiwi — buy Tuesday. Use at Thursday and Friday breakfast — perishable. Do not let them sit in the cooler past Friday.</p>
           <p>☕ Coffee — confirm what the rental unit has BEFORE packing the Nespresso. If they have nothing, bring: machine, pods (enough for 4 mornings plus guests), dairy creamer, non-dairy creamer.</p>
           <p>⚠️ Food allergies in the group — stock BOTH whole milk AND non-dairy milk (oat or almond). Same for coffee creamer. Confirm which family members and which guests need non-dairy.</p>
           <p>🫘 Beans pull double duty — breakfast tacos Thursday morning AND taco dinner Friday. One purchase, two meals.</p>
